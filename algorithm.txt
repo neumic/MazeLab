@@ -1,0 +1,31 @@
+turn slightly left
+drive until first touch sensor
+stop
+turn to center
+
+while ! done:
+   while only one side touch sensor active and not front touch sensor active:
+      drive
+   if 0 side touch sensors active:
+      start turning
+      until one touch sensor active:
+         drive
+      stop
+      turn to center
+      drive
+   elif 2 side touch sensors active:
+      stop
+      turn right slightly
+      until one touch sensor active:
+         drive
+      stop
+      turn to center
+      drive
+   else: #front active
+      stop
+      back up slightly
+      turn right slightly less than 90 degrees
+      forward slightly
+      turn to center
+      drive
+
