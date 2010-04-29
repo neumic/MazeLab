@@ -31,13 +31,14 @@ class MazeBot:
 			if self.brick:
 				self.drive			= nxt.motor.Motor(self.brick, PORT_B)
 				self.turn			= nxt.motor.Motor(self.brick, PORT_A)
-				self.wall_contact	= TouchSensor(self.brick, PORT_1)
+				self.wall_contact	= TouchSensor(self.brick, PORT_3)
 				self.wall_close	= TouchSensor(self.brick, PORT_1)
-				self.front			= TouchSensor(self.brick, PORT_1)
+				self.front_contact= TouchSensor(self.brick, PORT_2)
+				self.sound			= SoundSensor(self.brick, PORT_4)
 
 				self.sensor_lock	= threading.Lock()
 
-				kill_switch_thread = thread_wait( self.get_touch, self.stop )
+				kill_switch_thread = thread_wait( self.get_sound, self.stop )
 				kill_switch_thread.start()
 
 			else:
@@ -45,40 +46,45 @@ class MazeBot:
 		else:
 			print 'No NXT bricks found'
 
-	def go(self, speed= 128):
+	def go(self, speed= 127):
 		self.sensor_lock.acquire()
-		self.drive.run(-122)
+		self.drive.run(speed)
+		self.sensor_lock.release()
+
+	def spin(self, speed=-127):
+		self.sensor_lock.acquire()
+		self.turn.run(speed)
 		self.sensor_lock.release()
 	
 	def stop(self):
 		self.sensor_lock.acquire()
 		self.drive.stop()
+		self.turn.stop()
 		self.sensor_lock.release()
 
 	def suicide(self):
 		#print "Dying."
 		self.stop()
-		self.sensor_lock.acquire()
-		self.light.set_illuminated(False)
-		self.sensor_lock.release()
 		sleep(1)
+
+	def has_wall_contact(self):
+		pass
+	
+	def get_sound(self):
+		pass
 		
-	def get_touch(self):
-		self.sensor_lock.acquire()
-		value = self.touch.get_sample()
-		self.sensor_lock.release()
-		return value
 	
 def run_maze(side = -1):
 	bill = MazeBot( )
 	try:
+		pass
 	finally:
 		bill.stop()
 	
 def test():
 	bob = MazeBot()
 	sleep(3)
-	bob.go()
+	bob.spin()
 	sleep(5)
 	bob.stop()
 	exit()
