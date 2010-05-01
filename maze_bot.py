@@ -31,9 +31,9 @@ class MazeBot:
 			if self.brick:
 				self.drive			= nxt.motor.Motor(self.brick, PORT_B)
 				self.turn			= nxt.motor.Motor(self.brick, PORT_A)
-				self.wall_contact	= TouchSensor(self.brick, PORT_3)
-				self.wall_close	= TouchSensor(self.brick, PORT_1)
-				self.front_contact= TouchSensor(self.brick, PORT_2)
+				self.wall_contact	= TouchSensor(self.brick, PORT_1)
+				self.wall_close	= TouchSensor(self.brick, PORT_2)
+				self.front_contact= TouchSensor(self.brick, PORT_3)
 				self.sound			= SoundSensor(self.brick, PORT_4)
 
 				self.sensor_lock	= threading.Lock()
@@ -67,8 +67,11 @@ class MazeBot:
 		self.stop()
 		sleep(1)
 
-	def has_wall_contact(self):
-		pass
+	def is_wall_contact(self):
+		return self.wall_contact.get_sample()
+	
+	def is_wall_close(self):
+		return not self.wall_close.get_sample()
 	
 	def get_sound(self):
 		pass
@@ -83,10 +86,9 @@ def run_maze(side = -1):
 	
 def test():
 	bob = MazeBot()
-	sleep(3)
-	bob.spin()
-	sleep(5)
-	bob.stop()
+	while True:
+		print bob.is_wall_contact()
+		print bob.is_wall_close()
 	exit()
 	
 if __name__ == "__main__":
